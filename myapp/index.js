@@ -1,5 +1,5 @@
-import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import {createServer} from 'node:http';
+import fs  from 'node:fs/promises';
 
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -14,12 +14,12 @@ const server = createServer(async (req, res) => {
   } else {
     res.statusCode = 404;
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.end('Страница не найдена');
-    return;
+    res.end('страница не нашлась');
+    return 0;
   }
 
   try {
-    const html = await readFile(
+    const html = await fs.readFile(
       new URL(`./${file}`, import.meta.url),
       'utf8'
     );
@@ -28,10 +28,10 @@ const server = createServer(async (req, res) => {
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.end(html);
   } catch (err) {
-    console.error('Ошибка чтения файла:', err.message);
+    console.error('файл не читается:', err.message);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.end('Ошибка загрузки страницы');
+    res.end('не загружается страница');
   }
 });
 
